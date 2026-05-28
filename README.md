@@ -101,31 +101,18 @@ ABC-final-project/
 
 #### Vegetación
 - **NDVI** - Normalized Difference Vegetation Index: densidad y vigor vegetal
-- **EVI** - Enhanced Vegetation Index: vegetación en zonas de alta densidad
-- **EVI2** - Enhanced Vegetation Index 2: versión simplificada sin banda azul
 - **SAVI** - Soil-Adjusted Vegetation Index: vegetación con corrección de suelo
-- **MSAVI** - Modified SAVI: versión mejorada con efecto mínimo del suelo
-- **GNDVI** - Green NDVI: sensible al contenido de clorofila
-- **NDRE** - Normalized Difference Red Edge: estrés vegetal y clorofila
-- **CIRE** - Chlorophyll Index Red Edge: concentración de clorofila
-- **GLI** - Green Leaf Index: vegetación verde activa
-- **PSRI** - Plant Senescence Reflectance Index: senescencia vegetal
 
 #### Urbano / Superficie Construida
 - **NDBI** - Normalized Difference Built-up Index: superficies construidas
-- **IBI** - Index-based Built-up Index: densidad urbana integrada
-- **UI** - Urban Index: intensidad de urbanización
-- **EBBI** - Enhanced Built-up and Bareness Index: construcción y suelo desnudo
 
 #### Suelo Desnudo
 - **BSI** - Bare Soil Index: suelo desnudo y superficies degradadas
-- **NDTI** - Normalized Difference Tillage Index: residuos agrícolas
 
 #### Agua y Humedad
 - **MNDWI** - Modified Normalized Difference Water Index: láminas de agua
 - **NDWI** - Normalized Difference Water Index: agua y humedad vegetal
 - **NDMI** - Normalized Difference Moisture Index: humedad en vegetación y suelo
-- **NDSI** - Normalized Difference Snow Index: nieve e hielo
 
 #### Fuego y Áreas Quemadas
 - **NBR** - Normalized Burn Ratio: áreas quemadas y severidad
@@ -144,7 +131,6 @@ ABC-final-project/
 | `fecha` | Fecha de la imagen Sentinel-2 |
 | `month` | Mes (1-12) |
 | `year` | Año |
-| `dayofyear` | Día del año (1-365) |
 | `season` | Estación del año (spring, summer, autumn, winter) |
 
 ## Modelo XGBoost
@@ -155,11 +141,11 @@ elevation · mndwi · nbr · ndbi · ndmi
 ndvi · ndwi · nir · swir1 · swir2 · season
 ```
 
-### Rendimiento en Test Set
-- **Accuracy**: ~82%
-- **F1-score (macro)**: ~0.81
-- **AUC-ROC**: ~0.88
-- **Recall en riesgo**: ~0.79 (capacidad de detectar zonas de riesgo real)
+### Rendimiento del modelo optimizado
+- **Accuracy**: ~68%
+- **F1-score (macro)**: ~0.71
+- **AUC-ROC**: ~0.74
+- **Recall en riesgo**: ~0.73 (capacidad de detectar zonas de riesgo real)
 
 ### Importancia de Features
 Las variables más influyentes son:
@@ -189,7 +175,7 @@ pip install -r requirements.txt
 
 ## Uso
 
-### Ejecutar la Aplicación Streamlit (rama `streamlit-app`)
+### Ejecutar la Aplicación Streamlit (rama `despliegue-y-mapa`)
 ```bash
 git checkout streamlit-app
 streamlit run src/app.py
@@ -197,7 +183,7 @@ streamlit run src/app.py
 
 Accede a: `http://localhost:8501`
 
-### Generar Mapas de Predicciones (rama `streamlit-app`)
+### Generar Mapas de Predicciones (rama `despliegue-y-mapa`)
 ```bash
 git checkout streamlit-app
 python src/exportar_mapa.py
@@ -247,4 +233,4 @@ El modelo demuestra que **es posible predecir el riesgo de isla de calor urbana 
 
 **Última actualización:** Mayo 2026
 **Rama principal:** `main`
-**Rama despliegue:** `streamlit-app`
+**Rama despliegue:** `despliegue-y-mapa`
