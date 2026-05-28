@@ -229,11 +229,8 @@ El modelo demuestra que **es posible predecir el riesgo de isla de calor urbana 
 
 ## 👥 Autores
 
-- ekbalam11
+- ekbalam11, anaisaponte-GitH, crerov
 
-## 📄 Licencia
-
-Proyecto de código abierto. Consulta el repositorio para más detalles.
 
 ---
 
