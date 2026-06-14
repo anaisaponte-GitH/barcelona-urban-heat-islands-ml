@@ -2,6 +2,10 @@
 
 Este proyecto desarrolla un **modelo de aprendizaje automático para predecir el riesgo de isla de calor urbana (UHI)** en Barcelona utilizando índices espectrales de satélites Sentinel-2 y datos de temperatura MODIS.
 
+## Demo Online
+
+[Ver Demo Online](https://uhi-risk-model.streamlit.app/)
+
 ## Descripción del Proyecto
 
 Las **islas de calor urbanas (UHI)** son zonas dentro de las ciudades que retienen más calor que su entorno, especialmente durante la noche. Este fenómeno está directamente asociado a:
