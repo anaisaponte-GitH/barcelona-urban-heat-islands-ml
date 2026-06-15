@@ -8,6 +8,18 @@ The objective was to determine whether it is possible to predict urban heat risk
 
 🔗 **Live Demo:** https://uhi-risk-model.streamlit.app/
 
+<h3 align="center">Urban Heat Island Risk Map</h3>
+
+<p align="center">
+  <img src="images/risk_map.png" width="100%">
+</p>
+
+<h3 align="center">Feature Importance Analysis</h3>
+
+<p align="center">
+  <img src="images/feature_importance.png" width="100%">
+</p>
+
 ---
 
 ## Business Problem
@@ -16,10 +28,10 @@ Urban Heat Islands (UHI) are areas within cities that retain significantly more 
 
 This phenomenon is associated with:
 
-* High building density
-* Limited vegetation coverage
-* Impermeable urban surfaces
-* Reduced water presence
+- High building density
+- Limited vegetation coverage
+- Impermeable urban surfaces
+- Reduced water presence
 
 UHI affects public health, energy consumption, and overall quality of life in urban environments.
 
@@ -29,163 +41,143 @@ Traditional monitoring depends on temperature sensors with limited spatial cover
 
 ## Project Goal
 
-Build a Machine Learning model capable of classifying urban locations into:
+Develop a Machine Learning model capable of predicting Urban Heat Island risk in Barcelona using satellite-derived environmental indicators.
 
-* **Risk** → Areas with elevated Urban Heat Island risk
-* **No Risk** → Areas without significant thermal risk
+The solution aims to:
 
-The final solution was designed to support environmental monitoring, urban planning, and climate resilience initiatives.
+- Identify areas with a higher probability of heat accumulation.
+- Support large-scale environmental monitoring.
+- Provide actionable insights for urban planning and sustainability initiatives.
+- Evaluate whether spectral and environmental indicators alone can serve as reliable predictors of UHI risk.
 
 ---
 
 ## Dataset
 
-The dataset was created by combining multiple geospatial data sources through Google Earth Engine.
+The dataset was generated using Google Earth Engine by combining Sentinel-2 and MODIS satellite products.
 
 ### Dataset Characteristics
 
-* **69,683 observations**
-* **Barcelona metropolitan area**
-* **Period:** 2020–2025
-* **Multitemporal environmental data**
-* **14 predictive variables**
+- **69,683 geospatial observations**
+- **Barcelona metropolitan area**
+- **Period: 2020–2025**
+- **14 predictive variables**
+- Binary target variable (**uhi_risk**)
 
-The target variable (**uhi_risk**) was generated from nighttime thermal anomalies derived from MODIS surface temperature measurements.
+The target variable was derived from nighttime thermal anomalies calculated from MODIS Land Surface Temperature measurements.
 
 ---
 
 ## Data Sources
 
-### Sentinel-2 (European Space Agency)
+### Sentinel-2
 
-Provides spectral information used to generate environmental indicators such as:
+Environmental indicators and spectral indices:
 
-* NDVI (Vegetation)
-* NDBI (Built-up Areas)
-* NDWI / MNDWI (Water Presence)
-* NDMI (Moisture)
-* NBR (Burned Areas)
+- NDVI (Normalized Difference Vegetation Index)
+- NDWI (Normalized Difference Water Index)
+- NDBI (Normalized Difference Built-up Index)
+- NBR (Normalized Burn Ratio)
+- MNDWI (Modified NDWI)
+- NDMI (Normalized Difference Moisture Index)
+- NIR
+- SWIR1
+- SWIR2
 
-### MODIS (NASA)
+### MODIS
 
-Provides:
+Used to calculate:
 
-* Daytime surface temperature
-* Nighttime surface temperature
+- Land Surface Temperature (Day)
+- Land Surface Temperature (Night)
+- Thermal anomalies
 
-Used exclusively to construct the target variable.
+### Additional Variables
 
-### SRTM Elevation Data
-
-Provides terrain elevation and topographic information.
+- Elevation
+- Seasonal information
+- Geographic coordinates (latitude and longitude)
 
 ### Google Earth Engine
 
-Used as the cloud-based platform for satellite image acquisition, filtering, processing, and dataset generation.
-
----
-
-## Exploratory Data Analysis
-
-The EDA phase revealed clear relationships between environmental conditions and Urban Heat Island risk:
-
-### Key Findings
-
-* Lower NDVI values are associated with higher UHI risk.
-* Higher urbanization indicators (NDBI) correlate with increased thermal risk.
-* Nighttime thermal anomalies strongly differentiate Risk and No Risk areas.
-* Terrain elevation influences heat distribution patterns.
-
-These findings confirmed that satellite-derived variables contain predictive signals capable of identifying UHI-prone areas.
+Used for satellite image acquisition, filtering, processing, and dataset generation.
 
 ---
 
 ## Machine Learning Approach
 
-Three supervised learning algorithms were evaluated:
+Three supervised learning algorithms were initially evaluated:
 
-| Model         | Accuracy | Recall (Risk) | F1 Score (Risk) |
-| ------------- | -------- | ------------- | --------------- |
-| XGBoost       | 0.72     | 0.75          | 0.74            |
-| Random Forest | 0.71     | 0.73          | 0.72            |
-| SVM           | 0.71     | 0.75          | 0.73            |
+| Model | Accuracy | Recall (Risk) | F1 Score (Risk) |
+|---------|---------|---------|---------|
+| XGBoost | 0.72 | 0.75 | 0.74 |
+| Random Forest | 0.71 | 0.73 | 0.72 |
+| SVM | 0.71 | 0.75 | 0.73 |
 
-Additional experiments were performed removing geographic coordinates to evaluate model generalization capability.
+These initial experiments included geographic coordinates as predictive features.
 
-| Final Selected Model                    | Accuracy | Recall | F1 Score |
-| --------------------------------------- | -------- | ------ | -------- |
-| XGBoost Optimized (Without Coordinates) | 0.68     | 0.73   | 0.71     |
+XGBoost achieved the best overall performance and was selected for further analysis.
 
----
+### Feature Importance Analysis
 
-## Why XGBoost Was Selected
-
-Although several models achieved similar performance, XGBoost was selected because it offered the best balance between:
-
-* Predictive performance
-* Recall for high-risk areas
-* Robustness
-* Environmental generalization capability
-
-The final version intentionally excludes geographic coordinates to reduce location dependency and improve transferability to other urban environments.
+The model identified elevation, seasonal patterns, vegetation coverage (NDVI), and spectral indicators as the most relevant predictors of Urban Heat Island risk.
 
 ---
 
-## Feature Importance
+## Generalization Experiment
 
-The most influential variables identified by the final model were:
+A second experiment was conducted to evaluate whether the model was relying excessively on geographic coordinates.
 
-1. Elevation
-2. Summer seasonality
-3. NDVI (Vegetation Index)
-4. NIR and SWIR spectral bands
-5. Water-related indices (MNDWI, NDWI)
+Latitude and longitude were intentionally removed from the feature set to reduce spatial leakage and test the model's ability to generalize to unseen locations.
 
-These results align with known environmental factors associated with Urban Heat Island formation.
+### Final Production Model
 
----
+| Model | Accuracy | Recall (Risk) | F1 Score (Risk) |
+|---------|---------|---------|---------|
+| XGBoost (Without Coordinates) | 0.68 | 0.73 | 0.71 |
 
-## Interactive Application
+Although performance decreased slightly, the model maintained strong predictive capability while becoming less dependent on memorizing specific geographic locations.
 
-The project includes a Streamlit web application that allows users to:
+This trade-off was considered beneficial because the objective was not to predict heat risk in known neighborhoods of Barcelona, but to build a model capable of learning environmental patterns associated with Urban Heat Islands.
 
-* Explore model performance metrics
-* Analyze feature importance
-* Visualize geospatial predictions
-* Navigate interactive heat-risk maps
-* Generate individual predictions
-
-### Technologies Used
-
-* Python
-* Pandas
-* NumPy
-* Scikit-Learn
-* XGBoost
-* Streamlit
-* Folium
-* Google Earth Engine
-* Remote Sensing
-* Geospatial Analysis
+For this reason, the coordinate-free XGBoost model was selected as the final production model and deployed in the Streamlit application.
 
 ---
 
 ## Results
 
-The project demonstrates that Urban Heat Island risk can be predicted using publicly available satellite imagery and environmental indicators without requiring temperature measurements as model inputs.
+The project demonstrates that Urban Heat Island risk can be predicted using publicly available satellite imagery and environmental indicators without requiring direct temperature measurements as model inputs.
 
-The final model successfully captures environmental patterns associated with urban heat accumulation and provides actionable insights for city-scale analysis.
+The final model successfully captures environmental patterns associated with urban heat accumulation and provides interpretable insights for city-scale analysis.
+
+The results suggest that vegetation coverage, elevation, seasonal effects, and land surface characteristics are strong indicators of Urban Heat Island risk and can support future urban sustainability strategies.
 
 ---
 
-## Potential Applications
+## Technologies Used
 
-* Urban Planning
-* Climate Resilience Programs
-* Environmental Monitoring
-* Green Infrastructure Prioritization
-* Sustainability Initiatives
-* Early Warning Systems
+- Python
+- Pandas
+- NumPy
+- Scikit-Learn
+- XGBoost
+- Streamlit
+- Folium
+- Plotly
+- Google Earth Engine
+- Sentinel-2
+- MODIS
+
+---
+
+## Business Impact & Applications
+
+- Urban Planning
+- Climate Resilience Programs
+- Environmental Monitoring
+- Green Infrastructure Prioritization
+- Sustainability Initiatives
+- Early Warning Systems
 
 ---
 
@@ -193,14 +185,8 @@ The final model successfully captures environmental patterns associated with urb
 
 Developed as the Final Project of the Data Science & Machine Learning Bootcamp at 4Geeks Academy.
 
-**Team**
+### Team
 
-* Anais Aponte
-* Balam Castro
-* Cristina Cerverón
-
----
-
-### About Me
-
-This repository is part of my Machine Learning portfolio and reflects my interest in applying Data Science and Artificial Intelligence to real-world environmental and geospatial challenges.
+- Anais Aponte
+- Balam Castro
+- Cristina Cerverón
